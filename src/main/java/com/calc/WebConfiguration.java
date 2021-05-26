@@ -1,9 +1,14 @@
 package com.calc;
 
+import com.calc.intercept.SessionIsNullIntercept;
+import com.calc.intercept.SessionNotNullIntercept;
 import com.calc.model.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -12,9 +17,12 @@ import org.thymeleaf.templatemode.TemplateMode;
 import java.util.HashMap;
 import java.util.Map;
 
+//extends WebMvcConfigurerAdapter
+
 @Configuration
 @ComponentScan(basePackages = "com.calc")
-public class WebConfiguration {
+@EnableWebMvc
+public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public SpringResourceTemplateResolver templateResolver(){
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -49,5 +57,11 @@ public class WebConfiguration {
         map.put("mul", mul);
         map.put("div", div);
         return map;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SessionIsNullIntercept()).addPathPatterns("/calc", "/history", "/exit");
+        registry.addInterceptor(new SessionNotNullIntercept()).addPathPatterns("/reg", "/auth");
     }
 }

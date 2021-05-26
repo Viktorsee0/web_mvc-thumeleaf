@@ -4,6 +4,7 @@ import com.calc.model.Action;
 import com.calc.model.Operation;
 import com.calc.model.User;
 import com.calc.service.OperationService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,10 +25,7 @@ public class CalculatorController {
     OperationService service;
 
     @GetMapping
-    public String viewPage(HttpSession session) {
-        if (session.getAttribute("user") == null){
-            return "error";
-        }
+    public String viewPage(HttpSession session, Model model) {
         return "calc";
     }
 
